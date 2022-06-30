@@ -12,6 +12,17 @@ import (
 	"github.com/golang/glog"
 )
 
+// Generate a UUID
+func GenerateUUID() string {
+	var symbols = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890")
+	var uuid string
+	for i := 0; i < 12; i++ {
+		uuid += string(symbols[rand.Intn(len(symbols)-1)])
+	}
+
+	return uuid
+}
+
 // Upload a file, save and attribute a hash
 func upload(w http.ResponseWriter, r *http.Request) {
 	glog.Info("Request recieved")
@@ -57,33 +68,26 @@ func upload(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Successfully Uploaded File\n http://localhost:8000/%s\n", uuid)
 }
 
-// Generate a UUID
-func GenerateUUID() string {
-	var symbols = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890")
-	var uuid string
-	for i := 0; i < 12; i++ {
-		uuid += string(symbols[rand.Intn(len(symbols)-1)])
-	}
-
-	return uuid
-}
-
-// Get Adler-32 Hash.
+// To implement
 func getFile(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// Route handling and application serving
+// Route handling, logging and application serving
 func main() {
-	rand.Seed(time.Now().Unix()) // initialize global pseudo random generator
+	// Random seed creation
+	rand.Seed(time.Now().Unix())
+
+	// Flags for the leveled logging
 	flag.Usage = func() { fmt.Println("USAGE: To implement") }
 	flag.Set("logtostderr", "true")
 	flag.Set("stderrthreshold", "WARNING")
 	flag.Set("v", "2")
-
 	flag.Parse()
 
 	glog.Flush()
+
+	// Routing
 	http.HandleFunc("/", upload)
 	http.HandleFunc("/:hash", getFile)
 	http.ListenAndServe(":8000", nil)

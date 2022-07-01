@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"regexp"
 	"time"
 
 	"github.com/golang/glog"
@@ -65,11 +66,31 @@ func upload(w http.ResponseWriter, r *http.Request) {
 
 	// To review all possible status codes
 	w.WriteHeader(200)
-	fmt.Fprintf(w, "Successfully Uploaded File\n http://localhost:8000/%s\n", uuid)
+	fmt.Fprintf(w, "Successfully Uploaded File\n http://localhost:8000/id/%s\n", uuid)
 }
 
-// To implement
 func getFile(w http.ResponseWriter, r *http.Request) {
+	//We will get under path and storage the only file that will be inside and return it to the client
+	var re = regexp.MustCompile(`(?m)[^\/]+$`)
+	var uuid string
+	for _, match := range re.FindAllString(r.URL.Path, -1) {
+		uuid = match
+	}
+	path := fmt.Sprintf("./storage/%s/", uuid)
+
+	glog.Infof(`Route "%s"`, r.URL.Path)
+	glog.Infof(`Retrieving UUID "%s"`, uuid)
+	glog.Infof(`Retrieving Path "%s"`, path)
+
+	files, err := ioutil.ReadDir(path)
+	if err != nil {
+		glog.Errorf(`Error walking filepath "%s"`, path)
+	}
+
+	var file = files[0]
+	glog.Infof(`Retrieving Filename "%s"`, "./"+file.Name())
+	w.Header().Set("Content-Disposition", "attachment; filename="+file.Name())
+	http.ServeFile(w, r, "./"+path+"/"+file.Name())
 
 }
 
@@ -89,6 +110,6 @@ func main() {
 
 	// Routing
 	http.HandleFunc("/", upload)
-	http.HandleFunc("/:hash", getFile)
+	http.HandleFunc("/id/", getFile)
 	http.ListenAndServe(":8000", nil)
 }

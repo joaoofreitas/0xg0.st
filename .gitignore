@@ -1,4 +1,4 @@
-# Binaries for programs and plugins
+#Binaries for programs and plugins
 *.exe
 *.exe~
 *.dll
@@ -14,4 +14,6 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
+# No need to publish the storage folder neither the executable
 storage/*
+*.st

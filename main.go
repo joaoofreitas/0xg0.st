@@ -28,8 +28,8 @@ func GenerateUUID() string {
 func upload(w http.ResponseWriter, r *http.Request) {
 	glog.Info("Request recieved")
 
-	var uuid = GenerateUUID()
-	path := fmt.Sprintf("./storage/%s/", uuid)
+	var uuid string = GenerateUUID()
+	var path string = fmt.Sprintf("./storage/%s/", uuid)
 
 	// Prepare to get the file
 	file, header, err := r.FormFile("file")

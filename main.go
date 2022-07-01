@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"strings"
 	"time"
 
 	"github.com/golang/glog"
@@ -28,7 +29,7 @@ func GenerateUUID() string {
 func upload(w http.ResponseWriter, r *http.Request) {
 	glog.Info("Request recieved")
 
-	if r.Header.Get("Content-type") != "multipart/form-data" {
+	if !strings.Contains(r.Header.Get("Content-type"), "multipart/form-data") {
 		glog.Error(`Bad request. Content-type should be "multipart/form-data."`)
 
 		w.WriteHeader(http.StatusBadRequest)

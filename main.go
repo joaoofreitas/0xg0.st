@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -32,12 +33,13 @@ func main() {
 	rand.Seed(time.Now().Unix())
 
 	// Flags for the leveled logging
-	flag.Usage = func() { fmt.Println("USAGE: To implement") }
-	flag.Set("logtostderr", "true")
-	flag.Set("stderrthreshold", "INFO")
-	flag.Set("v", "2")
-	flag.Parse()
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "usage: 0xg0.st -stderrthreshold=[INFO|WARNING|FATAL] -log_dir=[string]\n")
+		flag.PrintDefaults()
+		os.Exit(2)
+	}
 
+	flag.Parse()
 	glog.Flush()
 
 	// Routing

@@ -10,6 +10,11 @@ import (
 	"github.com/golang/glog"
 )
 
+// Handles and processes the home page
+func home(w http.ResponseWriter, r *http.Request) {
+	tmpl.Execute(w, fmt.Sprintf(`http://%s/`, r.Host))
+}
+
 // Upload a file, save and attribute a hash
 func upload(w http.ResponseWriter, r *http.Request) {
 	glog.Info("Upload request recieved")

@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"html/template"
 	"math/rand"
 	"net/http"
 	"os"
@@ -11,6 +12,8 @@ import (
 
 	"github.com/golang/glog"
 )
+
+var tmpl *template.Template
 
 // Dead simple router that just does the **perform** the job
 func router(w http.ResponseWriter, r *http.Request) {
@@ -22,7 +25,7 @@ func router(w http.ResponseWriter, r *http.Request) {
 		getFile(w, r)
 		break
 	default:
-		http.ServeFile(w, r, "./templates/index.html")
+		home(w, r)
 		break
 	}
 }
@@ -32,11 +35,13 @@ func main() {
 	// Random seed creation
 	rand.Seed(time.Now().Unix())
 
+	// Home template initalization
+	tmpl = template.Must(template.ParseFiles("./templates/index.html"))
 	// Flags for the leveled logging
 	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "usage: 0xg0.st -stderrthreshold=[INFO|WARNING|FATAL] -log_dir=[string]\n")
+		fmt.Fprintf(os.Stderr, "USAGE: ./0xg0.st -stderrthreshold=[INFO|WARNING|FATAL] -log_dir=[string]\n")
 		flag.PrintDefaults()
-		os.Exit(2)
+		os.Exit(1)
 	}
 
 	flag.Parse()

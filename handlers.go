@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"regexp"
 	"strings"
 
 	"github.com/golang/glog"
@@ -13,15 +12,7 @@ import (
 
 // Upload a file, save and attribute a hash
 func upload(w http.ResponseWriter, r *http.Request) {
-	glog.Info("Request recieved")
-
-	if !strings.Contains(r.Header.Get("Content-type"), "multipart/form-data") {
-		glog.Error(`Bad request. Content-type should be "multipart/form-data."`)
-
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintf(w, `Bad request. Content-type should be "multipart/form-data"`)
-		return
-	}
+	glog.Info("Upload request recieved")
 
 	var uuid string = GenerateUUID()
 	var path string = fmt.Sprintf("./storage/%s/", uuid)
@@ -85,15 +76,9 @@ func upload(w http.ResponseWriter, r *http.Request) {
 
 // Gets the file using the provided UUID on the URL
 func getFile(w http.ResponseWriter, r *http.Request) {
-	//We will get under path and storage the only file that will be inside and return it to the client
-	var uuid string
-
-	// Maybe try a strings.Replace(r.URL.Path[1:], "/", "", -1)?
-	var re = regexp.MustCompile(`(?m)[^\/]+$`)
-	for _, match := range re.FindAllString(r.URL.Path, -1) {
-		uuid = match
-	}
-	path := fmt.Sprintf("./storage/%s/", uuid)
+	glog.Info("Retrieve request recieved")
+	var uuid string = strings.Replace(r.URL.Path[1:], "/", "", -1)
+	var path string = fmt.Sprintf("./storage/%s/", uuid)
 
 	glog.Infof(`Route "%s"`, r.URL.Path)
 	glog.Infof(`Retrieving UUID "%s"`, uuid)

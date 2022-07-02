@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/golang/glog"
@@ -12,12 +13,15 @@ import (
 
 // Dead simple router that just does the **perform** the job
 func router(w http.ResponseWriter, r *http.Request) {
-	switch r.URL.Path {
-	case "/":
+	switch {
+	case strings.Contains(r.Header.Get("Content-type"), "multipart/form-data"):
 		upload(w, r)
 		break
-	default:
+	case uuidMatch.MatchString(r.URL.Path):
 		getFile(w, r)
+		break
+	default:
+		http.ServeFile(w, r, "./templates/index.html")
 		break
 	}
 }

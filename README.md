@@ -13,7 +13,7 @@ Big thank's to <a>Mia Herkt</a> for the initiative.
 This project is built totally in pure [Go](https://go.dev) only using the basic standard library.
 
 
-### OPERATOR NOTES
+### Operator notes
 If you run a server and like this site, clone it! Centralization is bad.
 If you have any problem, open up an issue in GitHub.
 

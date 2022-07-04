@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -12,7 +13,7 @@ import (
 
 // Handles and processes the home page
 func home(w http.ResponseWriter, r *http.Request) {
-	tmpl.Execute(w, fmt.Sprintf(`http://%s/`, r.Host))
+	tmpl.Execute(w, template.HTML(fmt.Sprintf(`http://%s/`, r.Host)))
 }
 
 // Upload a file, save and attribute a hash
@@ -53,7 +54,6 @@ func upload(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "No storage available.")
 		return
 	}
-
 	// Build and Write the file.
 	bytes, err := ioutil.ReadAll(file)
 	if err != nil {

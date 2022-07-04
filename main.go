@@ -13,6 +13,7 @@ import (
 	"github.com/golang/glog"
 )
 
+var port *uint64
 var tmpl *template.Template
 
 // Dead simple router that just does the **perform** the job
@@ -38,8 +39,9 @@ func main() {
 	// Home template initalization
 	tmpl = template.Must(template.ParseFiles("./templates/index.html"))
 	// Flags for the leveled logging
+	port = flag.Uint64("p", 8000, "port")
 	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "USAGE: ./0xg0.st -stderrthreshold=[INFO|WARNING|FATAL] -log_dir=[string]\n")
+		fmt.Fprintf(os.Stderr, "USAGE: ./0xg0.st -p=8080 -stderrthreshold=[INFO|WARNING|FATAL] -log_dir=[string]\n")
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
@@ -49,5 +51,5 @@ func main() {
 
 	// Routing
 	http.HandleFunc("/", router)
-	http.ListenAndServe(":8000", nil)
+	http.ListenAndServe(fmt.Sprintf(":%d", *port), nil)
 }

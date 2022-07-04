@@ -6,7 +6,7 @@ HTTP POST files here:
 
 ### Shotout
 
-This project is a simpler and minimal clone of <a href="https://0x0.st"l>https://0x0.st</a>.
+This project is a simpler and minimal clone of [](https://0x0.st)
 Big thank's to <a>Mia Herkt</a> for the initiative.
 
 This project is built totally in pure [Go](https://go.dev) only using the basic standard library.

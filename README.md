@@ -6,7 +6,8 @@ HTTP POST files here:
 
 ### Shotout
 
-This project is a simpler and minimal clone of [](https://0x0.st)
+This project is a simpler and minimal clone of [https://0x0.st](https://0x0.st).
+
 Big thank's to <a>Mia Herkt</a> for the initiative.
 
 This project is built totally in pure [Go](https://go.dev) only using the basic standard library.
@@ -16,7 +17,7 @@ This project is built totally in pure [Go](https://go.dev) only using the basic 
 If you run a server and like this site, clone it! Centralization is bad.
 If you have any problem, open up an issue in GitHub.
 
-[](https://github.com/joaoofreitas/0x90.st)
+[https://github.com/joaoofreitas/0x90.st](https://github.com/joaoofreitas/0x90.st)
 
 ### Usage
 

@@ -3,10 +3,13 @@ package main
 import (
 	"fmt"
 	"html/template"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
+
+	gopath "path"
 
 	"github.com/golang/glog"
 )
@@ -54,18 +57,19 @@ func upload(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "No storage available.")
 		return
 	}
-	// Build and Write the file.
-	bytes, err := ioutil.ReadAll(file)
+
+	f, err := os.OpenFile(gopath.Join(path, header.Filename), os.O_WRONLY|os.O_CREATE, 0777)
 	if err != nil {
-		glog.Errorf("Content not readable.")
+		glog.Errorf("Error creating file.")
 		glog.Errorf("Error: %s", err.Error())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintf(w, "Internal Server Error. Content not readable.")
+		fmt.Fprintf(w, "Error creating file.")
 		return
 	}
-	err = os.WriteFile(path+header.Filename, bytes, 0777)
-	if err != nil {
+	defer f.Close()
+
+	if _, err := io.Copy(f, file); err != nil {
 		glog.Errorf("Error writing file.")
 		glog.Errorf("Error: %s", err.Error())
 

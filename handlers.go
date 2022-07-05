@@ -46,7 +46,7 @@ func upload(w http.ResponseWriter, r *http.Request) {
 		_, err = os.Stat(path)
 	}
 
-	if err := os.Mkdir(path, 0777); err != nil {
+	if err := os.MkdirAll(path, 0777); err != nil {
 		glog.Error("Error saving file on server...")
 		glog.Errorf("Error: %s", err.Error())
 

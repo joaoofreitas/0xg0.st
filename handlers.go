@@ -75,7 +75,6 @@ func upload(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// All good
-	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, "OK, Successfully Uploaded\n http://%s/%s\n", r.Host, uuid)
 }
 

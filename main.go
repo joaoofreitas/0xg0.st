@@ -41,7 +41,7 @@ func main() {
 	tmpl = template.Must(template.ParseFiles("./templates/index.html"))
 	// Flags for the leveled logging
 
-	host = flag.String("h", "0.0.0.0", "ip")
+	host = flag.String("h", "0.0.0.0", "Address to serve on")
 	port = flag.Uint64("p", 8000, "port")
 
 	flag.Usage = func() {

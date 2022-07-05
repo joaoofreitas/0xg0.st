@@ -15,6 +15,7 @@ import (
 
 var port *uint64
 var tmpl *template.Template
+var ip *string
 
 // Dead simple router that just does the **perform** the job
 func router(w http.ResponseWriter, r *http.Request) {
@@ -39,7 +40,10 @@ func main() {
 	// Home template initalization
 	tmpl = template.Must(template.ParseFiles("./templates/index.html"))
 	// Flags for the leveled logging
+
+	ip = flag.String("i", "0.0.0.0", "ip")
 	port = flag.Uint64("p", 8000, "port")
+
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "USAGE: ./0xg0.st -p=8080 -stderrthreshold=[INFO|WARNING|FATAL] -log_dir=[string]\n")
 		flag.PrintDefaults()
@@ -51,5 +55,5 @@ func main() {
 
 	// Routing
 	http.HandleFunc("/", router)
-	http.ListenAndServe(fmt.Sprintf(":%d", *port), nil)
+	http.ListenAndServe(fmt.Sprintf("%s:%d",*ip,*port), nil)
 }

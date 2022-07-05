@@ -21,13 +21,10 @@ func router(w http.ResponseWriter, r *http.Request) {
 	switch {
 	case strings.Contains(r.Header.Get("Content-type"), "multipart/form-data"):
 		upload(w, r)
-		break
 	case uuidMatch.MatchString(r.URL.Path):
 		getFile(w, r)
-		break
 	default:
 		home(w, r)
-		break
 	}
 }
 

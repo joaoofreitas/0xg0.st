@@ -18,7 +18,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 
 // Upload a file, save and attribute a hash
 func upload(w http.ResponseWriter, r *http.Request) {
-	glog.Info("Upload request recieved")
+	glog.Info("Upload request received")
 
 	var uuid string = GenerateUUID()
 	var path string = fmt.Sprintf("./storage/%s/", uuid)
@@ -80,7 +80,7 @@ func upload(w http.ResponseWriter, r *http.Request) {
 
 // Gets the file using the provided UUID on the URL
 func getFile(w http.ResponseWriter, r *http.Request) {
-	glog.Info("Retrieve request recieved")
+	glog.Info("Retrieve request received")
 	var uuid string = strings.Replace(r.URL.Path[1:], "/", "", -1)
 	var path string = fmt.Sprintf("./storage/%s/", uuid)
 

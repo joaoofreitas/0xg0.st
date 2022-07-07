@@ -3,9 +3,11 @@ package main
 import (
 	"fmt"
 	"html/template"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
+	"path"
 	"strings"
 
 	"github.com/golang/glog"
@@ -18,10 +20,10 @@ func home(w http.ResponseWriter, r *http.Request) {
 
 // Upload a file, save and attribute a hash
 func upload(w http.ResponseWriter, r *http.Request) {
-	glog.Info("Upload request received")
+	glog.Info("Upload request recieved")
 
 	var uuid string = GenerateUUID()
-	var path string = fmt.Sprintf("./storage/%s/", uuid)
+	var filepath string = fmt.Sprintf("./storage/%s/", uuid)
 
 	// Prepare to get the file
 	file, header, err := r.FormFile("file")
@@ -39,14 +41,14 @@ func upload(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Creates directory with UUID
-	_, err = os.Stat(path)
+	_, err = os.Stat(filepath)
 	for !os.IsNotExist(err) {
 		uuid = GenerateUUID()
-		path := fmt.Sprintf("./storage/%s/", uuid)
-		_, err = os.Stat(path)
+		filepath := fmt.Sprintf("./storage/%s/", uuid)
+		_, err = os.Stat(filepath)
 	}
 
-	if err := os.MkdirAll(path, 0777); err != nil {
+	if err := os.MkdirAll(filepath, 0777); err != nil {
 		glog.Error("Error saving file on server...")
 		glog.Errorf("Error: %s", err.Error())
 
@@ -54,18 +56,19 @@ func upload(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "No storage available.")
 		return
 	}
-	// Build and Write the file.
-	bytes, err := ioutil.ReadAll(file)
+
+	f, err := os.OpenFile(path.Join(filepath, header.Filename), os.O_WRONLY|os.O_CREATE, 0777)
 	if err != nil {
-		glog.Errorf("Content not readable.")
+		glog.Errorf("Error creating file.")
 		glog.Errorf("Error: %s", err.Error())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintf(w, "Internal Server Error. Content not readable.")
+		fmt.Fprintf(w, "Error creating file.")
 		return
 	}
-	err = os.WriteFile(path+header.Filename, bytes, 0777)
-	if err != nil {
+	defer f.Close()
+
+	if _, err := io.Copy(f, file); err != nil {
 		glog.Errorf("Error writing file.")
 		glog.Errorf("Error: %s", err.Error())
 
